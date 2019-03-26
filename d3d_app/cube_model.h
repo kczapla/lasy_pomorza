@@ -50,3 +50,11 @@ dx::Mesh<T> build_simeple_cube_model()
 
 	return cube_model;
 }
+
+
+std::vector<dx::VertexPostionColor<DirectX::XMFLOAT3>> triangle_vertcies
+{
+	{ DirectX::XMFLOAT3(0.0f, 0.5f, 0.5f), DirectX::XMFLOAT3(0.0f,   0.0f,   1.0f), },
+	{ DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f), },
+	{ DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f), DirectX::XMFLOAT3(0.0f,   0.0f,   1.0f), },
+};

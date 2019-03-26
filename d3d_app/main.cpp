@@ -15,6 +15,7 @@
 #include "cube_model.h"
 #include "shader.h"
 #include "input_assembler.h"
+#include "swapchain.h"
 
 #include <string>
 #include <vector>
@@ -22,7 +23,6 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
-
 	std::string window_name = "learn to program win";
 	std::string window_text = "ebebe";
 	BasicWindow<DxSimpleWindow> win(window_name, window_text);
@@ -43,32 +43,23 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto[device, device_context] = dx::resources::make_device<ID3D11Device, ID3D11DeviceContext, IDXGIAdapter>(adapter);
 
 	auto dxgi_device = dx::graphics_interface::get_dxgi_device_from<IDXGIDevice2, ID3D11Device>(device);
-	auto swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2>(dxgi_device, factory, win.get_window_id(), width, height);
 
-	struct vs_constant_buffer
-	{
-		float x = 4;
-		float y = 5;
-		float u = 6;
-		float z = 7;
+	dx::graphics_interface::SampleDescription<DXGI_SAMPLE_DESC> sd{ 1, 0 };
+	dx::graphics_interface::SwapchainDesc<DXGI_SWAP_CHAIN_DESC1, DXGI_SAMPLE_DESC> scd{
+		width,
+		height,
+		DXGI_FORMAT_B8G8R8A8_UNORM,
+		false,
+		sd,
+		DXGI_USAGE_RENDER_TARGET_OUTPUT,
+		2,
+		DXGI_SCALING_STRETCH,
+		DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL,
+		DXGI_ALPHA_MODE_IGNORE,
+		0,
 	};
 
-	auto vcb_data = std::make_unique<vs_constant_buffer>();
-
-	dx::resources::BufferProperties cbp;
-	cbp.size = sizeof(vs_constant_buffer);
-	cbp.usage = D3D11_USAGE_DYNAMIC;
-	cbp.bind_flags = D3D11_BIND_CONSTANT_BUFFER;
-	cbp.cpu_access_flags = D3D11_CPU_ACCESS_WRITE;
-	cbp.misc_flags = 0;
-	cbp.structure_byte_stride = 0;
-
-	dx::resources::SubresourcesData<vs_constant_buffer> sdcb;
-	sdcb.buffer_data = vcb_data.get();
-
-	dx::resources::BufferFactory<ID3D11Device, dx::resources::BufferProperties, dx::resources::SubresourcesData<vs_constant_buffer>> const_buffer_factory(device);
-	auto const_buffer = const_buffer_factory.make_buffer(cbp, sdcb);
-	device_context->VSSetConstantBuffers(0, 1, const_buffer.GetAddressOf());
+	auto swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2, dx::graphics_interface::SwapchainDesc<DXGI_SWAP_CHAIN_DESC1, DXGI_SAMPLE_DESC>>(dxgi_device, factory, win.get_window_id(), scd);
 
 	auto cube_model = build_simeple_cube_model();
 
@@ -76,9 +67,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	
 	std::wstring vertex_shader_path = L"simple_vertex_shader.hlsl";
 	auto vertex_shader_code = shader_compiler.compile(vertex_shader_path, "main", "vs_5_0");
-
+	
 	std::vector<dx::graphics_pipeline::input_assembler::D3D11ElementDescription> input_asm_elems_desc{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
@@ -88,8 +79,27 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	};
 
 	dx::graphics_pipeline::input_assembler::D3D11Factory<ID3D11Device> input_asm_factory(device);
+	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	auto input_layout = input_asm_factory.create(input_layout_data);
 	device_context->IASetInputLayout(input_layout.Get());
+
+
+	dx::resources::BufferProperties vbp{
+		triangle_vertcies.size() * sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_VERTEX_BUFFER,
+		0, 0
+	};
+
+	dx::resources::SubresourcesData<dx::VertexPostionColor<DirectX::XMFLOAT3>> vbsd{
+		triangle_vertcies.data()
+	};
+	
+	dx::resources::BufferFactory<ID3D11Device, dx::resources::BufferProperties, dx::resources::SubresourcesData<dx::VertexPostionColor<DirectX::XMFLOAT3>>> vertex_buffer_factory(device);
+	auto vertex_buffer = vertex_buffer_factory.make_buffer(vbp, vbsd);
+	UINT stride = sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>);
+	UINT offset = 0;
+	device_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 
 	std::wstring pixel_shader_path = L"simple_pixel_shader.hlsl";
 	auto pixel_shader_code = shader_compiler.compile(pixel_shader_path, "main", "ps_5_0");
@@ -100,6 +110,27 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto pixel_shader = shader_factory.create_pixel_shader(pixel_shader_code);
 	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
 
+	auto back_buffer = swapchain.get_buffer<ID3D11Texture2D>();
+	D3D11_TEXTURE2D_DESC tex2d_desc;
+	back_buffer->GetDesc(&tex2d_desc);
+
+	D3D11_VIEWPORT view_port{
+		0, 0, tex2d_desc.Width, tex2d_desc.Height, 0, 1,
+	};
+	device_context->RSSetViewports(1, &view_port);
+
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;
+	
+	auto hr = device->CreateRenderTargetView(
+		back_buffer.Get(),
+		nullptr,
+		render_target_view.GetAddressOf()
+	);
+	const float teal[] = { 0.098f, 0.439f, 0.439f, 1.000f };
+	device_context->ClearRenderTargetView(render_target_view.Get(), teal);
+	device_context->OMSetRenderTargets(1, render_target_view.GetAddressOf(), nullptr);
+	device_context->Draw(3, 0);
+	swapchain.present(1, 0);
 
 	window_loop();
 

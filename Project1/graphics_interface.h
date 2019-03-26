@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include"swapchain.h"
+
 
 namespace dx
 {
@@ -66,42 +68,6 @@ namespace dx
 			auto hr = device->QueryInterface(__uuidof(DXGIDevice), reinterpret_cast<void**>(dxgi_device.GetAddressOf()));
 
 			return dxgi_device;
-		}
-
-		template <typename DXGISwapChain, typename DXGIDevice, typename DXGIFactory, 
-				  typename = EnableIfDXGISwapChain<DXGISwapChain>,
-				  typename = EnableIfDXGIDevice2<DXGIDevice>, 
-				  typename = EnableIfDXGIFactory2<DXGIFactory>>
-		Microsoft::WRL::ComPtr<DXGISwapChain>
-			make_swapchain_for_win32_wnd(
-				Microsoft::WRL::ComPtr<DXGIDevice> device,
-				Microsoft::WRL::ComPtr<DXGIFactory> factory,
-				HWND wnd_id, int width, int height)
-		{
-			DXGI_SWAP_CHAIN_DESC1 desc{ 0 };
-			desc.Width = width;
-			desc.Height = height;
-			desc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-			desc.SampleDesc.Count = 1;
-			desc.SampleDesc.Quality = 0;
-			desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-			desc.BufferCount = 2;
-			desc.Scaling = DXGI_SCALING_STRETCH;
-			desc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-			desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-			desc.Flags = 0;
-
-			Microsoft::WRL::ComPtr<DXGISwapChain> swapchain = nullptr;
-			auto hr = factory->CreateSwapChainForHwnd(
-				reinterpret_cast<IUnknown*>(device.Get()),
-				wnd_id,
-				&desc,
-				nullptr,
-				nullptr,
-				&swapchain
-			);
-
-			return swapchain;
 		}
 	}
 }
