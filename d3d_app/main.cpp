@@ -16,6 +16,7 @@
 #include "shader.h"
 #include "input_assembler.h"
 #include "swapchain.h"
+#include "render_target.h"
 
 #include <string>
 #include <vector>
@@ -116,16 +117,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	D3D11_VIEWPORT view_port{
 		0, 0, tex2d_desc.Width, tex2d_desc.Height, 0, 1,
 	};
-
 	device_context->RSSetViewports(1, &view_port);
 
-	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;
-	
-	auto hr = device->CreateRenderTargetView(
-		back_buffer.Get(),
-		nullptr,
-		render_target_view.GetAddressOf()
-	);
+	dx::graphics_pipeline::render_target::Factory<ID3D11Device, IDXGISwapChain1, ID3D11RenderTargetView> render_traget_view_factory(device, swapchain);
+	auto render_target_view = render_traget_view_factory.create<ID3D11Texture2D, D3D11_TEXTURE2D_DESC>({ 0 });
+
 	const float teal[] = { 0.098f, 0.439f, 0.439f, 1.000f };
 	device_context->ClearRenderTargetView(render_target_view.Get(), teal);
 	device_context->OMSetRenderTargets(1, render_target_view.GetAddressOf(), nullptr);
