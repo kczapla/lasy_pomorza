@@ -79,6 +79,10 @@ LRESULT CALLBACK BasicWindow<WindowType>::window_proc(HWND hwnd, UINT uMsg, WPAR
 
 		pThis->window_id = hwnd;
 	}
+	else if (uMsg == WM_CLOSE) {
+		PostQuitMessage(0);
+		return 0;
+	}
 	else {
 		pThis = reinterpret_cast<BasicWindow<WindowType>*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 	}
@@ -88,13 +92,6 @@ LRESULT CALLBACK BasicWindow<WindowType>::window_proc(HWND hwnd, UINT uMsg, WPAR
 	}
 	else {
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
-	}
-
-	switch (uMsg)
-	{
-	case WM_CLOSE:
-		PostQuitMessage(0);
-		return 0;
 	}
 }
 
