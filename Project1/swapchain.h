@@ -70,45 +70,29 @@ namespace dx
 			return desc;
 		}
 
-
-		template <typename SwapchainType>
-		class Swapchain
+		template<typename DXGISwapchain, typename BufferInterface>
+		Microsoft::WRL::ComPtr<BufferInterface> get_back_buffer(Microsoft::WRL::ComPtr<DXGISwapchain> swapchain)
 		{
-			Microsoft::WRL::ComPtr<SwapchainType> _swapchain{ nullptr };
-
-		public:
-			Swapchain(Microsoft::WRL::ComPtr<SwapchainType> swapchain) : _swapchain(swapchain) {};
-
-			template <typename BufferType>
-			Microsoft::WRL::ComPtr<BufferType> get_buffer();
-
-			void present(unsigned int sync_interval, unsigned int flags);
-		};
-
-		template<typename SwapchainType>
-		template<typename BufferType>
-		inline Microsoft::WRL::ComPtr<BufferType> Swapchain<SwapchainType>::get_buffer()
-		{
-			Microsoft::WRL::ComPtr<BufferType> buffer{ nullptr };
-			_swapchain->GetBuffer(
+			Microsoft::WRL::ComPtr<BufferInterface> buffer{ nullptr };
+			swapchain->GetBuffer(
 				0,
-				__uuidof(BufferType),
+				__uuidof(BufferInterface),
 				reinterpret_cast<void**>(buffer.GetAddressOf())
 			);
 			return buffer;
 		}
 
-		template <typename DXGISwapChain, typename DXGIDevice, typename DXGIFactory, typename SwapchainDescType,
-			typename = EnableIfDXGISwapChain<DXGISwapChain>,
+		template <typename DXGISwapchain, typename DXGIDevice, typename DXGIFactory, typename SwapchainDescType,
+			typename = EnableIfDXGISwapChain<DXGISwapchain>,
 			typename = EnableIfDXGIDevice2<DXGIDevice>,
 			typename = EnableIfDXGIFactory2<DXGIFactory>>
-		Swapchain<DXGISwapChain> make_swapchain_for_win32_wnd(
+		Microsoft::WRL::ComPtr<DXGISwapchain> make_swapchain_for_win32_wnd(
 			Microsoft::WRL::ComPtr<DXGIDevice> device,
 			Microsoft::WRL::ComPtr<DXGIFactory> factory,
 			HWND wnd_id, 
 			SwapchainDescType swapchain_desc)
 		{
-			Microsoft::WRL::ComPtr<DXGISwapChain> dxgi_swapchain = nullptr;
+			Microsoft::WRL::ComPtr<DXGISwapchain> dxgi_swapchain = nullptr;
 			auto desc = swapchain_desc.convert();
 			auto hr = factory->CreateSwapChainForHwnd(
 				reinterpret_cast<IUnknown*>(device.Get()),
@@ -119,14 +103,7 @@ namespace dx
 				&dxgi_swapchain
 			);
 
-			Swapchain<DXGISwapChain> swapchain(dxgi_swapchain);
-			return swapchain;
+			return dxgi_swapchain;
 		}
-
-		template<typename SwapchainType>
-		inline void Swapchain<SwapchainType>::present(unsigned int sync_interval, unsigned int flags)
-		{
-			auto hr = _swapchain->Present(sync_interval, flags);
-		}
-}
+	}
 }

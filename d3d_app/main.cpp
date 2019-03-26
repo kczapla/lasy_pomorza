@@ -83,7 +83,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto input_layout = input_asm_factory.create(input_layout_data);
 	device_context->IASetInputLayout(input_layout.Get());
 
-
 	dx::resources::BufferProperties vbp{
 		triangle_vertcies.size() * sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>),
 		D3D11_USAGE_DEFAULT,
@@ -110,13 +109,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto pixel_shader = shader_factory.create_pixel_shader(pixel_shader_code);
 	device_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
 
-	auto back_buffer = swapchain.get_buffer<ID3D11Texture2D>();
+	auto back_buffer = dx::graphics_interface::get_back_buffer<IDXGISwapChain1, ID3D11Texture2D>(swapchain);
 	D3D11_TEXTURE2D_DESC tex2d_desc;
 	back_buffer->GetDesc(&tex2d_desc);
 
 	D3D11_VIEWPORT view_port{
 		0, 0, tex2d_desc.Width, tex2d_desc.Height, 0, 1,
 	};
+
 	device_context->RSSetViewports(1, &view_port);
 
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view;
@@ -130,7 +130,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	device_context->ClearRenderTargetView(render_target_view.Get(), teal);
 	device_context->OMSetRenderTargets(1, render_target_view.GetAddressOf(), nullptr);
 	device_context->Draw(3, 0);
-	swapchain.present(1, 0);
+	swapchain->Present(1, 0);
 
 	window_loop();
 

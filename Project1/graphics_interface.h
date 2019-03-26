@@ -31,8 +31,8 @@ namespace dx
 		template <typename D3D11DeviceType>
 		using EnableIfD3D11Device = EnableIfTypesAreTheSame<D3D11DeviceType, ID3D11Device>;
 
-		template <typename DXGISwapChain>
-		using EnableIfDXGISwapChain = EnableIfTypesAreTheSame<DXGISwapChain, IDXGISwapChain1>;
+		template <typename DXGISwapchain>
+		using EnableIfDXGISwapChain = EnableIfTypesAreTheSame<DXGISwapchain, IDXGISwapChain1>;
 
 
 		template<typename FactoryType, typename = EnableIfDXGIFactory2<FactoryType>>
