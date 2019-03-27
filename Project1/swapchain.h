@@ -14,63 +14,6 @@ namespace dx
 {
 	namespace graphics_interface
 	{
-		template <typename SampleDescType>
-		struct SampleDescription
-		{
-			unsigned int count{ 0 };
-			unsigned int quality{ 0 };
-
-			operator SampleDescType() const;
-		};
-
-		template <typename SampleDescType>
-		inline SampleDescription<SampleDescType>::operator SampleDescType() const
-		{
-			SampleDescType desc{
-				count, quality,
-			};
-			return desc;
-		}
-
-
-		template <typename SwapchainDescType, typename SampleDescType>
-		struct SwapchainDesc
-		{
-			std::size_t width{ 0 };
-			std::size_t height{ 0 };
-			DXGI_FORMAT format{ 0 };
-			bool stereo{ 0 };
-			SampleDescType sample_desc{ 0 };
-			DXGI_USAGE usage{ 0 };
-			unsigned int buffer_count{ 0 };
-			DXGI_SCALING scaling{ 0 };
-			DXGI_SWAP_EFFECT swap_effect{ 0 };
-			DXGI_ALPHA_MODE alpha_mode{ 0 };
-			unsigned int flags{ 0 };
-
-			SwapchainDescType convert() const;
-		};
-
-
-		template<typename SwapchainDescType, typename SampleDescType>
-		inline SwapchainDescType SwapchainDesc<SwapchainDescType, SampleDescType>::convert() const
-		{
-			SwapchainDescType desc{
-				width,
-				height,
-				format,
-				stereo,
-				sample_desc,
-				usage,
-				buffer_count,
-				scaling,
-				swap_effect,
-				alpha_mode,
-				flags,
-			};
-			return desc;
-		}
-
 		template<typename DXGISwapchain, typename BufferInterface>
 		Microsoft::WRL::ComPtr<BufferInterface> get_back_buffer(Microsoft::WRL::ComPtr<DXGISwapchain> swapchain)
 		{
@@ -94,11 +37,10 @@ namespace dx
 			SwapchainDescType swapchain_desc)
 		{
 			Microsoft::WRL::ComPtr<DXGISwapchain> dxgi_swapchain = nullptr;
-			auto desc = swapchain_desc.convert();
 			auto hr = factory->CreateSwapChainForHwnd(
 				reinterpret_cast<IUnknown*>(device.Get()),
 				wnd_id,
-				&desc,
+				&swapchain_desc,
 				nullptr,
 				nullptr,
 				&dxgi_swapchain

@@ -45,13 +45,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 
 	auto dxgi_device = dx::graphics_interface::get_dxgi_device_from<IDXGIDevice2, ID3D11Device>(device);
 
-	dx::graphics_interface::SampleDescription<DXGI_SAMPLE_DESC> sd{ 1, 0 };
-	dx::graphics_interface::SwapchainDesc<DXGI_SWAP_CHAIN_DESC1, DXGI_SAMPLE_DESC> scd{
+	DXGI_SWAP_CHAIN_DESC1 scd{
 		width,
 		height,
 		DXGI_FORMAT_B8G8R8A8_UNORM,
 		false,
-		sd,
+	    {1 , 0},
 		DXGI_USAGE_RENDER_TARGET_OUTPUT,
 		2,
 		DXGI_SCALING_STRETCH,
@@ -60,7 +59,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		0,
 	};
 
-	auto swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2, dx::graphics_interface::SwapchainDesc<DXGI_SWAP_CHAIN_DESC1, DXGI_SAMPLE_DESC>>(dxgi_device, factory, win.get_window_id(), scd);
+	auto swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2, DXGI_SWAP_CHAIN_DESC1>(dxgi_device, factory, win.get_window_id(), scd);
 
 	auto cube_model = build_simeple_cube_model();
 
