@@ -84,18 +84,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto input_layout = input_asm_factory.create(input_layout_data);
 	device_context->IASetInputLayout(input_layout.Get());
 
-	dx::resources::BufferProperties vbp{
+	D3D11_BUFFER_DESC vbp{
 		triangle_vertcies.size() * sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>),
 		D3D11_USAGE_DEFAULT,
 		D3D11_BIND_VERTEX_BUFFER,
 		0, 0
 	};
 
-	dx::resources::SubresourcesData<dx::VertexPostionColor<DirectX::XMFLOAT3>> vbsd{
+	D3D11_SUBRESOURCE_DATA vbsd{
 		triangle_vertcies.data()
 	};
 	
-	dx::resources::BufferFactory<ID3D11Device, dx::resources::BufferProperties, dx::resources::SubresourcesData<dx::VertexPostionColor<DirectX::XMFLOAT3>>> vertex_buffer_factory(device);
+	dx::resources::BufferFactory<ID3D11Device, D3D11_BUFFER_DESC, D3D11_SUBRESOURCE_DATA> vertex_buffer_factory(device);
 	auto vertex_buffer = vertex_buffer_factory.make_buffer(vbp, vbsd);
 	UINT stride = sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>);
 	UINT offset = 0;
