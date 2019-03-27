@@ -11,6 +11,8 @@
 
 #include"swapchain.h"
 
+#include "error.h"
+
 
 namespace dx
 {
@@ -40,6 +42,7 @@ namespace dx
 		{
 			Microsoft::WRL::ComPtr<FactoryType> factory;
 			auto hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(FactoryType), (void**)(&factory));
+			windows_infrastructure::throw_if_failed(hr);
 
 			return factory;
 		}
@@ -66,6 +69,7 @@ namespace dx
 		{
 			Microsoft::WRL::ComPtr<DXGIDevice> dxgi_device;
 			auto hr = device->QueryInterface(__uuidof(DXGIDevice), reinterpret_cast<void**>(dxgi_device.GetAddressOf()));
+			windows_infrastructure::throw_if_failed(hr);
 
 			return dxgi_device;
 		}

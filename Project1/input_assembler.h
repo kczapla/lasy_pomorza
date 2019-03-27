@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+#include "error.h"
+
 
 namespace dx
 {
@@ -78,6 +80,7 @@ namespace dx
 					layout_data.vertex_shader_code->GetBufferSize(),
 					input_layout.GetAddressOf()
 				);
+				windows_infrastructure::throw_if_failed(hr);
 				return input_layout;
 			}
 			

@@ -8,6 +8,8 @@
 
 #include <utility>
 
+#include "error.h"
+
 
 namespace dx
 {
@@ -56,6 +58,7 @@ namespace dx
 				&current_feature_level,
 				&device_context
 			);
+			windows_infrastructure::throw_if_failed(hr);
 			return std::make_pair(device, device_context);
 		}
 	}

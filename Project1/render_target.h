@@ -2,6 +2,7 @@
 
 #include <wrl.h>
 
+#include "error.h"
 #include "swapchain.h"
 
 
@@ -35,6 +36,7 @@ namespace dx
 					nullptr,
 					render_target_view.GetAddressOf()
 				);
+				windows_infrastructure::throw_if_failed(hr);
 				return render_target_view;
 			}
 		}

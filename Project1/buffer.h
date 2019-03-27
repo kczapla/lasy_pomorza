@@ -8,6 +8,8 @@
 
 #include <d3d11_4.h>
 
+#include "error.h"
+
 
 namespace dx
 {
@@ -62,6 +64,7 @@ namespace dx
 
 			Microsoft::WRL::ComPtr<ID3D11Buffer> buffer{ nullptr };
 			auto hr = _device_context->CreateBuffer(&buffer_desc, &init_data, buffer.GetAddressOf());
+			windows_infrastructure::throw_if_failed(hr);
 
 			return buffer;
 		}

@@ -5,5 +5,7 @@
 #include <windows.h>
 #include <strsafe.h>
 
-
-void error_exit(LPCWSTR lpszFunction);
+namespace windows_infrastructure
+{
+	void throw_if_failed(HRESULT hr);
+}

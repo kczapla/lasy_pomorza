@@ -7,6 +7,8 @@
 #include <dxgi1_3.h>
 #include "graphics_interface.h"
 
+#include "error.h"
+
 
 namespace dx
 {
@@ -101,7 +103,7 @@ namespace dx
 				nullptr,
 				&dxgi_swapchain
 			);
-
+			windows_infrastructure::throw_if_failed(hr);
 			return dxgi_swapchain;
 		}
 	}

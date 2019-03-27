@@ -50,6 +50,7 @@ namespace dx
 				compiled_code.GetAddressOf(),
 				compilation_errors.GetAddressOf()
 			);
+			windows_infrastructure::throw_if_failed(hr);
 
 			if (FAILED(hr))
 			{
@@ -83,6 +84,7 @@ namespace dx
 				nullptr,
 				shader.GetAddressOf()
 			);
+			windows_infrastructure::throw_if_failed(hr);
 			return shader;
 		}
 
@@ -96,6 +98,7 @@ namespace dx
 				nullptr,
 				shader.GetAddressOf()
 			);
+			windows_infrastructure::throw_if_failed(hr);
 			return shader;
 		}
 	}
