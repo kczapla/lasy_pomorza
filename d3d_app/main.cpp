@@ -69,17 +69,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	std::wstring vertex_shader_path = L"simple_vertex_shader.hlsl";
 	auto vertex_shader_code = shader_compiler.compile(vertex_shader_path, "main", "vs_5_0");
 	
-	std::vector<dx::graphics_pipeline::input_assembler::D3D11ElementDescription> input_asm_elems_desc{
+	std::vector<D3D11_INPUT_ELEMENT_DESC> input_asm_elems_desc{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT , D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	dx::graphics_pipeline::input_assembler::D3D11LayoutData input_layout_data{
+	dx::graphics_pipeline::input_assembler::LayoutData<D3D11_INPUT_ELEMENT_DESC> input_layout_data{
 		input_asm_elems_desc,
 		vertex_shader_code
 	};
 
-	dx::graphics_pipeline::input_assembler::D3D11Factory<ID3D11Device> input_asm_factory(device);
+	dx::graphics_pipeline::input_assembler::D3DFactory<ID3D11Device, ID3D11InputLayout, D3D11_INPUT_ELEMENT_DESC> input_asm_factory(device);
 	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	auto input_layout = input_asm_factory.create(input_layout_data);
 	device_context->IASetInputLayout(input_layout.Get());

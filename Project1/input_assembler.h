@@ -17,39 +17,6 @@ namespace dx
 	{
 		namespace input_assembler
 		{
-			template <typename ApiElementDescType, typename InputClassificationType>
-			struct ElementDescription
-			{
-				std::string semantic_name;
-				unsigned int semantic_index;
-				DXGI_FORMAT  format;
-				unsigned int input_slot;
-				unsigned int aligned_byte_offset;
-				InputClassificationType input_slot_class;
-				unsigned int instance_data_step_rate;
-
-				operator ApiElementDescType() const { return convert(); };
-			private:
-				ApiElementDescType convert() const;
-			};
-
-			
-			template <typename ApiElementDescType, typename InputClassificationType>
-			ApiElementDescType ElementDescription<ApiElementDescType, InputClassificationType>::convert() const
-			{
-				ApiElementDescType desc{
-					semantic_name.c_str(),
-					semantic_index,
-					format,
-					input_slot,
-					aligned_byte_offset,
-					input_slot_class,
-					instance_data_step_rate
-				};
-				return desc;
-			}
-			
-
 			template <typename ElementDescriptionType>
 			struct LayoutData
 			{
@@ -58,24 +25,23 @@ namespace dx
 			};
 
 
-			template <typename DeviceType, typename LayoutType, typename LayoutDataType, typename ElementDescriptionType>
+			template <typename D3DDeviceType, typename D3DInputLayout, typename D3DInputLayoutData>
 			class Factory
 			{
-				Microsoft::WRL::ComPtr<DeviceType> _device{ nullptr };
+				Microsoft::WRL::ComPtr<D3DDeviceType> _device{ nullptr };
 			public:
-				Factory(Microsoft::WRL::ComPtr<DeviceType> device) : _device(device) {};
-				Microsoft::WRL::ComPtr<LayoutType> create(LayoutDataType layout_data) const;
+				Factory(Microsoft::WRL::ComPtr<D3DDeviceType> device) : _device(device) {};
+				Microsoft::WRL::ComPtr<D3DInputLayout> create(D3DInputLayoutData layout_data) const;
 			};
 
 
-			template<typename DeviceType, typename LayoutType, typename LayoutDataType, typename ElementDescriptionType>
-			inline Microsoft::WRL::ComPtr<LayoutType> Factory<DeviceType, LayoutType, LayoutDataType, ElementDescriptionType>::create(LayoutDataType layout_data) const
+			template <typename D3DDeviceType, typename D3DInputLayout, typename D3DInputLayoutData>
+			inline Microsoft::WRL::ComPtr<D3DInputLayout> Factory<D3DDeviceType, D3DInputLayout, D3DInputLayoutData>::create(D3DInputLayoutData layout_data) const
 			{
-				std::vector<ElementDescriptionType> elems(layout_data.input_elems_description.begin(), layout_data.input_elems_description.end());
-				Microsoft::WRL::ComPtr<LayoutType> input_layout{ nullptr };
+				Microsoft::WRL::ComPtr<D3DInputLayout> input_layout{ nullptr };
 				auto hr = _device->CreateInputLayout(
-					elems.data(),
-					elems.size(),
+					layout_data.input_elems_description.data(),
+					layout_data.input_elems_description.size(),
 					layout_data.vertex_shader_code->GetBufferPointer(),
 					layout_data.vertex_shader_code->GetBufferSize(),
 					input_layout.GetAddressOf()
@@ -83,12 +49,9 @@ namespace dx
 				windows_infrastructure::throw_if_failed(hr);
 				return input_layout;
 			}
-			
-			using D3D11ElementDescription = ElementDescription<D3D11_INPUT_ELEMENT_DESC, D3D11_INPUT_CLASSIFICATION>;
-			using D3D11LayoutData = LayoutData<D3D11ElementDescription>;
 
-			template <typename DeviceType>
-			using D3D11Factory = Factory<DeviceType, ID3D11InputLayout, D3D11LayoutData, D3D11_INPUT_ELEMENT_DESC>;
+			template <typename D3DDeviceType, typename D3DInputLayout, typename D3DInputElemDesc>
+			using D3DFactory = Factory<D3DDeviceType, D3DInputLayout, LayoutData<D3DInputElemDesc>>;
 		}
 	}
 }
