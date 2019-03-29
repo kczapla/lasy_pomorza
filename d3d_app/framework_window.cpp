@@ -1,12 +1,10 @@
-#include <iostream>
-
-#include "window.h"
+#include "framework_window.h"
 
 
 void window_loop()
 {
 	MSG msg = {};
-	while (GetMessage(&msg, NULL, 0, 0))
+	while (PeekMessage(&msg, NULL, 0, 0))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
@@ -14,7 +12,7 @@ void window_loop()
 }
 
 
-LRESULT DxSimpleWindow::handle_msg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT FrameworkWindow::handle_msg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
@@ -25,9 +23,8 @@ LRESULT DxSimpleWindow::handle_msg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
 }
 
 
-LRESULT DxSimpleWindow::resize()
+LRESULT FrameworkWindow::resize()
 {
-	std::cout << "resize\n";
 	return 0;
 }
 

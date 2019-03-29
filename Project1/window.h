@@ -94,11 +94,3 @@ LRESULT CALLBACK BasicWindow<WindowType>::window_proc(HWND hwnd, UINT uMsg, WPAR
 		return DefWindowProc(hwnd, uMsg, wParam, lParam);
 	}
 }
-
-
-class DxSimpleWindow
-{
-	LRESULT resize();
-public:
-	LRESULT handle_msg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-};
