@@ -18,13 +18,11 @@ class Renderer
 
 public:
 	Renderer(std::shared_ptr<DeviceResources> device_resurces) :
-		_device_resources(device_resurces),
-		_shader_compiler(device_resurces->get_device()),
-		_input_asm_factory(device_resurces->get_device()),
-		_buffer_factory(device_resurces->get_device()),
-		_shader_factory(device_resurces->get_device()) 
-	{};
+		_device_resources(device_resurces)
 
+	{ };
+
+	void setup();
 	void create_resources();
 	void update();
 	void render();
@@ -37,3 +35,13 @@ private:
 	InputAsmFactory _input_asm_factory;
 	BufferFactory _buffer_factory;
 };
+
+
+template <typename Renderer, typename DeviceResources>
+std::shared_ptr<Renderer> make_renderer(std::shared_ptr<DeviceResources> device_resources)
+{
+	auto renderer = std::make_shared<Renderer>(device_resources);
+	renderer->setup();
+	renderer->create_resources();
+	return renderer;
+}

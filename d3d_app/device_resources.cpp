@@ -1,3 +1,4 @@
+#include <tuple>
 
 #include "device_resources.h"
 
@@ -23,15 +24,15 @@ void DeviceResources::create_swapchain(HWND window_id, std::pair<std::size_t, st
 		DXGI_ALPHA_MODE_IGNORE,
 		0,
 	};
-	auto swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2, DXGI_SWAP_CHAIN_DESC1>(dxgi_device, dxgi_factory, window_id, scd);
+	dxgi_swapchain = dx::graphics_interface::make_swapchain_for_win32_wnd<IDXGISwapChain1, IDXGIDevice2, IDXGIFactory2, DXGI_SWAP_CHAIN_DESC1>(dxgi_device, dxgi_factory, window_id, scd);
 }
 
 void DeviceResources::create_device()
 {
 	dxgi_factory = dx::graphics_interface::make_factory<IDXGIFactory2>();
 	auto dxgi_adapters = dx::graphics_interface::make_adapters_list<IDXGIFactory2, IDXGIAdapter>(dxgi_factory);
-	auto adapter = dxgi_adapters[0];
-	auto[device, device_context] = dx::resources::make_device<ID3D11Device, ID3D11DeviceContext, IDXGIAdapter>(adapter);
+	dxgi_adapter = dxgi_adapters[0];
+	std::tie(device, device_context) = dx::resources::make_device<ID3D11Device, ID3D11DeviceContext, IDXGIAdapter>(dxgi_adapter);
 }
 
 void DeviceResources::create_render_traget()

@@ -1,15 +1,15 @@
 #include "framework_window.h"
 
 
-void window_loop()
-{
-	MSG msg = {};
-	while (PeekMessage(&msg, NULL, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
-}
+//void window_loop()
+//{
+//	MSG msg = {};
+//	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+//	{
+//		TranslateMessage(&msg);
+//		DispatchMessage(&msg);
+//	}
+//}
 
 
 LRESULT FrameworkWindow::handle_msg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

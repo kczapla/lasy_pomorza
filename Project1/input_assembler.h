@@ -30,6 +30,7 @@ namespace dx
 			{
 				Microsoft::WRL::ComPtr<D3DDeviceType> _device{ nullptr };
 			public:
+				Factory() = default;
 				Factory(Microsoft::WRL::ComPtr<D3DDeviceType> device) : _device(device) {};
 				Microsoft::WRL::ComPtr<D3DInputLayout> create(D3DInputLayoutData layout_data) const;
 			};

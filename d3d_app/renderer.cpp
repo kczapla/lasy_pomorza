@@ -1,5 +1,17 @@
+#include <directxmath.h>
 #include "renderer.h"
+#include "cube_model.h"
+#include "vertex.h"
 
+
+void Renderer::setup()
+{
+	auto device = _device_resources->get_device();
+	_shader_compiler = dx::shader::Compiler<ID3D11Device>(device);
+	_input_asm_factory = InputAsmFactory(device),
+	_buffer_factory = BufferFactory(device);
+	_shader_factory = dx::shader::Factory<ID3D11Device>(device);
+}
 
 void Renderer::create_resources()
 {
@@ -19,6 +31,23 @@ void Renderer::create_resources()
 	device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	auto input_layout = _input_asm_factory.create(input_layout_data);
 	device_context->IASetInputLayout(input_layout.Get());
+
+	D3D11_BUFFER_DESC vbp{
+		triangle_vertcies.size() * sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_VERTEX_BUFFER,
+		0, 0
+	};
+	
+	D3D11_SUBRESOURCE_DATA vbsd{
+		triangle_vertcies.data()
+	};
+	
+	auto vertex_buffer = _buffer_factory.make_buffer(vbp, vbsd);
+	UINT stride = sizeof(dx::VertexPostionColor<DirectX::XMFLOAT3>);
+	UINT offset = 0;
+	device_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+
 
 	std::wstring pixel_shader_path = L"simple_pixel_shader.hlsl";
 	auto pixel_shader_code = _shader_compiler.compile(pixel_shader_path, "main", "ps_5_0");

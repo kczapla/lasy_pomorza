@@ -8,6 +8,7 @@
 #include <wrl.h>
 
 #include <utility>
+#include <memory>
 
 
 class DeviceResources
@@ -35,3 +36,15 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> back_buffer{ nullptr };
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> render_target_view{ nullptr };
 };
+
+
+template <typename DeviceResources, typename Window>
+std::shared_ptr<DeviceResources> make_device_resources(std::shared_ptr<Window> window)
+{
+	auto device_resources = std::make_shared<DeviceResources>();
+	device_resources->create_device();
+	device_resources->create_swapchain(window->get_window_id(), window->get_window_resolution());
+	device_resources->create_render_traget();
+
+	return device_resources;
+}

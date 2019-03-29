@@ -16,6 +16,7 @@ namespace dx
 		{
 			Microsoft::WRL::ComPtr<Device> _device{ nullptr };
 		public:
+			Compiler() = default;
 			Compiler(Microsoft::WRL::ComPtr<Device> device) : _device(device) {};
 
 			Microsoft::WRL::ComPtr<ID3DBlob> compile(std::wstring shader_path, std::string entry_point, std::string target);
@@ -69,6 +70,7 @@ namespace dx
 		{
 			Microsoft::WRL::ComPtr<DeviceType> _device{ nullptr };
 		public:
+			Factory() = default;
 			Factory(Microsoft::WRL::ComPtr<DeviceType> device) : _device(device) {};
 			Microsoft::WRL::ComPtr<ID3D11PixelShader> create_pixel_shader(Microsoft::WRL::ComPtr<ID3DBlob> shader_code);
 			Microsoft::WRL::ComPtr<ID3D11VertexShader> create_vertex_shader(Microsoft::WRL::ComPtr<ID3DBlob> shader_code);

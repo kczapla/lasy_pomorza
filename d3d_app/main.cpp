@@ -8,23 +8,30 @@
 #include <dxgi1_3.h>
 #include <d3d11_4.h>
 
-#include "graphics_interface.h"
+#include <memory>
+
+#include "framework_entry.h"
+#include "framework_window.h"
 #include "window.h"
-#include "device.h"
-#include "buffer.h"
-#include "cube_model.h"
-#include "shader.h"
-#include "input_assembler.h"
-#include "swapchain.h"
-#include "render_target.h"
-
-#include "file_operations.h"
-
-#include <string>
-#include <vector>
+#include "device_resources.h"
+#include "renderer.h"
 
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+
+	auto window = std::make_shared<BasicWindow<FrameworkWindow>>("D3D11 Framework", "dev");
+	if (!window->create(640, 480))
+	{
+		return 0;
+	}
+	ShowWindow(window->get_window_id(), nCmdShow);
+
+	auto device_resources = make_device_resources<DeviceResources, BasicWindow<FrameworkWindow>>(window);
+	auto renderer = make_renderer<Renderer, DeviceResources>(device_resources);
+
+	Framework<DeviceResources, Renderer, BasicWindow<FrameworkWindow>> framework(device_resources, renderer, window);
+	framework.run();
+
 	return 0;
 }

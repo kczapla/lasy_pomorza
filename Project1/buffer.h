@@ -20,6 +20,7 @@ namespace dx
 		{
 			Microsoft::WRL::ComPtr<DeviceType> _device_context{ nullptr };
 		public:
+			BufferFactory() = default;
 			BufferFactory(Microsoft::WRL::ComPtr<DeviceType> device_context) : _device_context(device_context) {}
 			Microsoft::WRL::ComPtr<ID3D11Buffer> make_buffer(BufferPropertiesType buffer_properties, SubresourcesDataType subresources_data);
 		};

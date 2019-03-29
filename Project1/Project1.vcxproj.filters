@@ -42,11 +42,17 @@
     <ClInclude Include="input_assembler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="swapchain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="render_target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="file_operations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="error.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

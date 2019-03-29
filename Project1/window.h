@@ -6,14 +6,9 @@
 
 #include <Windows.h>
 #include <string>
-#include <iostream>
+#include <utility>
 
 #include "error.h"
-
-
-void window_loop(void);
-
-LRESULT CALLBACK window_proc_test(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 template <typename WindowType>
@@ -22,6 +17,7 @@ class BasicWindow
 	HWND window_id = 0;
 	std::string window_name;
 	std::string window_text;
+	std::size_t width = 0, height = 0;
 
 	WindowType window_type;
 	
@@ -30,7 +26,8 @@ public:
 	BasicWindow(std::string window_name, std::string window_text) 
 		: window_name(window_name), window_text(window_text) {};
 	bool create(int width, int height);
-	auto get_window_id() { return window_id; }
+	auto get_window_id() { return window_id; };
+	auto get_window_resolution() { return std::make_pair(width, height); };
 
 	static LRESULT CALLBACK window_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
