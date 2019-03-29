@@ -23,6 +23,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> get_render_target_view() const;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> get_device_context() const;
 	Microsoft::WRL::ComPtr<ID3D11Device> get_device() const;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> get_swapchain() const;
 
 private:
 	Microsoft::WRL::ComPtr<IDXGIFactory2> dxgi_factory{ nullptr };

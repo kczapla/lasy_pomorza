@@ -68,3 +68,8 @@ Microsoft::WRL::ComPtr<ID3D11Device> DeviceResources::get_device() const
 {
 	return device;
 }
+
+Microsoft::WRL::ComPtr<IDXGISwapChain1> DeviceResources::get_swapchain() const
+{
+	return dxgi_swapchain;
+}
