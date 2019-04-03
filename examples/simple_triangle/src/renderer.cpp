@@ -15,7 +15,7 @@ void Renderer::setup()
 
 void Renderer::create_resources()
 {
-	std::wstring vertex_shader_path = L"simple_vertex_shader.hlsl";
+	std::wstring vertex_shader_path = L"resources/shaders/simple_vertex_shader.hlsl";
 	auto vertex_shader_code = _shader_compiler.compile(vertex_shader_path, "main", "vs_5_0");
 	std::vector<D3D11_INPUT_ELEMENT_DESC> input_asm_elems_desc{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0 , D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -49,7 +49,7 @@ void Renderer::create_resources()
 	device_context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 
 
-	std::wstring pixel_shader_path = L"simple_pixel_shader.hlsl";
+	std::wstring pixel_shader_path = L"resources/shaders/simple_pixel_shader.hlsl";
 	auto pixel_shader_code = _shader_compiler.compile(pixel_shader_path, "main", "ps_5_0");
 
 	auto vertex_shader = _shader_factory.create_vertex_shader(vertex_shader_code);
