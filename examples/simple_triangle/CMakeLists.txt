@@ -3,7 +3,8 @@ add_subdirectory(src)
 add_executable(simple_triangle WIN32 "${sources}")
 target_sources(simple_triangle PUBLIC "${headers}")
 
-target_link_libraries(simple_triangle renderer)
+target_link_libraries(simple_triangle PRIVATE renderer)
+target_link_libraries(simple_triangle PRIVATE logging)
 set_target_properties(simple_triangle PROPERTIES CXX_STANDARD 17)
 
 set (shaders_source_dir "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders")

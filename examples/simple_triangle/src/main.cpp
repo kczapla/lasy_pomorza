@@ -16,11 +16,15 @@
 #include "device_resources.h"
 #include "renderer.h"
 
+#include "logging.hpp"
+
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+	logging::_logging::add_file<logging::LoguruLogger>("example.log");
+	log(logging::Level::info) << "dziala";
 
-	auto window = std::make_shared<BasicWindow<FrameworkWindow>>("D3D11 Framework", "dev");
+	/*auto window = std::make_shared<BasicWindow<FrameworkWindow>>("D3D11 Framework", "dev");
 	if (!window->create(640, 480))
 	{
 		return 0;
@@ -31,7 +35,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	auto renderer = make_renderer<Renderer, DeviceResources>(device_resources);
 
 	Framework<DeviceResources, Renderer, BasicWindow<FrameworkWindow>> framework(device_resources, renderer, window);
-	framework.run();
+	framework.run();*/
 
 	return 0;
 }
