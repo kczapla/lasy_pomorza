@@ -24,7 +24,6 @@ namespace logging
 			LoggingPolicy::add_file(path);
 		}
 
-
 		template <typename LoggingPolicy>
 		class Log	
 		{
@@ -68,6 +67,6 @@ namespace logging
 		}
 	}
 
-	constexpr auto add_file = _logging::add_file<LoguruLogger>;
-	using Log = _logging::Log<LoguruLogger>;
+	constexpr auto add_file = _logging::add_file<LoguruLogging>;
+	using Log = _logging::Log<LoguruLogging>;
 }
