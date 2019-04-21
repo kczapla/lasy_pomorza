@@ -1,13 +1,13 @@
 #pragma once
 #include <sstream>
-#include <iostream>
+#include <string>
 
-#include "logging_interface.hpp"
+#include "logging_policy.hpp"
 
 
 namespace logging
 {
-	struct StdIOLogger : _logging::LoggingInterface<StdIOLogger>
+	struct LoguruLogging : LoggingPolicy<LoguruLogging>
 	{
 		static void add_file(std::string path);
 		static void info(std::ostringstream& msg);
