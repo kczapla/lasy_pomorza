@@ -4,7 +4,6 @@ add_library(${TARGET_NAME} STATIC)
 target_sources(${TARGET_NAME} 
     PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/logging.hpp"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/logging.cpp"
-    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/logger.hpp"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/logging_loguru.hpp"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/logging_loguru.cpp"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/logging_stdio.hpp"
